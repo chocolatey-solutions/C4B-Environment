@@ -81,7 +81,15 @@ function Wait-Site {
         while ($Response.StatusCode -ne '200' -and $Timer.Elapsed.TotalSeconds -lt $Timeout) {
             $Response = try {
                 Invoke-WebRequest $Url -UseBasicParsing -ErrorAction Stop
+            } catch [System.Net.WebException] {
+                if ($_.Exception.Response.StatusCode -eq '502') {
+                    Write-Verbose "[$(Get-Date -Format u)] Seeing 502 BadGateway from '$Url'. Waiting for site to come up / DNS to resolve..."
+                }
             } catch { $null }
+
+            if (-not $Response) {
+                Start-Sleep -Seconds 30
+            }
         }
 
         if ($Response.StatusCode -eq '200') {
