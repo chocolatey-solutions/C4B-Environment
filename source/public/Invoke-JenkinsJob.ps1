@@ -25,5 +25,5 @@ function Invoke-JenkinsJob {
         # Any job parameters
         [hashtable]$Parameters
     )
-    Invoke-JenkinsApi -Uri "$($Uri.TrimEnd('/'))/job/$Name/buildWithParameters" -Body $Parameters -Credential $Credential -RequiresCrumb
+    Invoke-JenkinsApi -Uri "$($Uri.TrimEnd('/'))" -Slug "/job/$Name/buildWithParameters" -Method POST -Body $Parameters -Credential $Credential -RequiresCrumb
 }
